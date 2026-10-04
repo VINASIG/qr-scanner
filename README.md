@@ -19,7 +19,7 @@ QR contents are shown as text. Decoded links never open automatically. Only expl
 
 ## Website
 
-The initial public deployment uses [GitHub Pages](https://vinasig.github.io/qr-scanner/). The intended custom domain is `scan.vinasig.io.vn`. It requires a DNS CNAME and Pages domain configuration before activation. See [deployment instructions](docs/DEPLOYMENT.md).
+The canonical website is [scan.vinasig.io.vn](https://scan.vinasig.io.vn/). GitHub Pages publishes the checked static build at the origin root. See [deployment instructions](docs/DEPLOYMENT.md) for DNS, HTTPS and sitemap maintenance.
 
 The VINASIG logo always links to [the organization website](https://vinasig.io.vn/). [QR Generator](https://qr.vinasig.io.vn/) is the companion tool for creating codes.
 
@@ -32,7 +32,7 @@ npx --yes npm@12.2.0 ci
 npx --yes npm@12.2.0 run dev
 ```
 
-Read the server log for the URL. The default public configuration uses the `/qr-scanner/` path. The local static preview chooses an available port.
+Read the server log for the URL. The default public configuration uses the origin-root path. The local static preview chooses an available port.
 
 ```sh
 npx --yes npm@12.2.0 run check

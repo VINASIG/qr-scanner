@@ -1,6 +1,6 @@
 export const siteOrigin =
-  process.env['SITE_ORIGIN'] ?? 'https://vinasig.github.io';
-const configuredBase = process.env['SITE_BASE'] ?? '/qr-scanner/';
+  process.env['SITE_ORIGIN'] ?? 'https://scan.vinasig.io.vn';
+const configuredBase = process.env['SITE_BASE'] ?? '/';
 if (
   !configuredBase.startsWith('/') ||
   !configuredBase.endsWith('/') ||

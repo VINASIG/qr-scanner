@@ -10,8 +10,8 @@ permissions:
   contents: read
 
 env:
-  SITE_ORIGIN: ${{ vars.SITE_ORIGIN || 'https://vinasig.github.io' }}
-  SITE_BASE: ${{ vars.SITE_BASE || '/qr-scanner/' }}
+  SITE_ORIGIN: ${{ vars.SITE_ORIGIN || 'https://scan.vinasig.io.vn' }}
+  SITE_BASE: ${{ vars.SITE_BASE || '/' }}
   PUBLIC_BUILD_REVISION: ${{ github.sha }}
 
 jobs:
