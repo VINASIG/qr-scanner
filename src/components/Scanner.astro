@@ -1,0 +1,227 @@
+---
+import {
+  ClipboardPaste,
+  ImagePlus,
+  Camera,
+  Trash,
+  QrCode,
+  ScanLine,
+  Download,
+  Square,
+} from '@lucide/astro';
+import { copy } from '../lib/copy.ts';
+import type { Lang } from '../lib/types.ts';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = copy(lang);
+---
+
+<section
+  id="scanner"
+  class="scanner"
+  data-scanner
+  data-lang={lang}
+  aria-label="QR Scanner"
+>
+  <div class="input-pane">
+    <div class="pane-heading">
+      <h2>{t.inputTitle}</h2>
+      <button class="button button-quiet" type="button" id="clear" disabled>
+        <Trash aria-hidden="true" />
+        <span>{t.clear}</span>
+      </button>
+    </div>
+    <div
+      id="dropzone"
+      class="dropzone"
+      aria-describedby="image-help image-error"
+    >
+      <ImagePlus aria-hidden="true" class="drop-icon" />
+      <p class="drop-title">{t.dropTitle}</p>
+      <div class="button-row">
+        <button
+          class="button button-primary"
+          type="button"
+          id="choose"
+          disabled
+        >
+          <ImagePlus aria-hidden="true" />
+          {t.choose}
+        </button>
+        <button
+          class="button button-secondary"
+          type="button"
+          id="paste"
+          disabled
+        >
+          <ClipboardPaste aria-hidden="true" />
+          {t.paste}
+        </button>
+      </div>
+      <label class="visually-hidden" for="file">
+        {t.choose}
+      </label>
+      <input
+        class="visually-hidden"
+        id="file"
+        type="file"
+        accept="image/png,image/jpeg,image/webp,image/gif,image/bmp,image/avif"
+        aria-describedby="image-help image-error"
+        tabindex="-1"
+        disabled
+      />
+      <p id="image-help" class="small muted">
+        {t.dropHelp}
+      </p>
+    </div>
+    <p class="field-error" id="image-error" role="alert" hidden></p>
+    <p class="small muted paste-help">{t.pasteHelp}</p>
+    <figure class="preview" id="preview" hidden>
+      <img
+        id="preview-image"
+        src={import.meta.env.BASE_URL + 'brand/mark.svg'}
+        alt={t.previewAlt}
+        width="480"
+        height="320"
+      />
+      <figcaption
+        id="image-name"
+        class="small muted"
+        data-user-content
+      ></figcaption>
+    </figure>
+    <details class="input-disclosure" id="url-section">
+      <summary>{t.urlTitle}</summary>
+      <form id="url-form" novalidate>
+        <label for="image-url">{t.urlLabel}</label>
+        <input
+          id="image-url"
+          type="url"
+          inputmode="url"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder={t.urlPlaceholder}
+          aria-describedby="url-help url-error"
+          disabled
+        />
+        <p class="field-error" id="url-error" role="alert" hidden></p>
+        <p id="url-help" class="small muted">
+          {t.urlHelp}
+        </p>
+        <button
+          class="button button-secondary"
+          type="submit"
+          id="scan-url"
+          disabled
+        >
+          <ScanLine aria-hidden="true" />
+          {t.scanURL}
+        </button>
+      </form>
+    </details>
+    <details class="input-disclosure" id="camera-section">
+      <summary>{t.cameraTitle}</summary>
+      <p class="small muted" id="camera-help">
+        {t.cameraHelp}
+      </p>
+      <fieldset class="camera-choice" disabled>
+        <legend>{t.cameraChoice}</legend>
+        <div class="radio-row">
+          <label>
+            <input type="radio" name="camera" value="environment" checked />
+            <span>{t.back}</span>
+          </label>
+          <label>
+            <input type="radio" name="camera" value="user" />
+            <span>{t.front}</span>
+          </label>
+        </div>
+      </fieldset>
+      <div class="button-row">
+        <button
+          class="button button-secondary"
+          type="button"
+          id="start-camera"
+          disabled
+        >
+          <Camera aria-hidden="true" />
+          {t.start}
+        </button>
+        <button
+          class="button button-secondary"
+          type="button"
+          id="stop-camera"
+          disabled
+        >
+          <Square aria-hidden="true" />
+          {t.stop}
+        </button>
+      </div>
+      <p class="field-error" id="camera-error" role="alert" hidden></p>
+      <div class="camera-preview" id="camera-preview" hidden>
+        <video
+          id="video"
+          aria-describedby="camera-help"
+
+          muted
+          playsinline
+        ></video>
+        <p class="small muted" id="camera-label" data-user-content></p>
+        <p class="small muted">{t.cameraFallback}</p>
+      </div>
+    </details>
+    <p class="privacy small muted">{t.privacy}</p>
+    <noscript>
+      <p class="field-error">{t.noScript}</p>
+    </noscript>
+  </div>
+  <div class="result-pane" aria-busy="false">
+    <h2>{t.resultTitle}</h2>
+    <div class="empty-result" id="empty">
+      <QrCode aria-hidden="true" />
+      <p class="muted">{t.empty}</p>
+    </div>
+    <p
+      id="status"
+      class="status small"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    ></p>
+    <div id="results" data-user-content></div>
+    <button
+      class="button button-secondary"
+      type="button"
+      id="download-results"
+      hidden
+      disabled
+    >
+      <Download aria-hidden="true" />
+      {t.downloadJSON}
+    </button>
+  </div>
+</section>
+<section class="faq" aria-labelledby="faq-title">
+  <h2 id="faq-title">{t.faqTitle}</h2>
+  {[1, 2, 3, 4].map((number) => (
+    <details class="faq-item">
+      <summary>{t[('faq' + String(number)) as 'faq1']}</summary>
+      <p>{t[('answer' + String(number)) as 'answer1']}</p>
+    </details>
+  ))}
+  <p class="small muted">
+    <a href="https://github.com/Sec-ant/zxing-wasm" rel="noopener noreferrer">
+      {t.references}
+    </a>
+  </p>
+</section>
+<aside class="related">
+  <h2>{t.generatorTitle}</h2>
+  <p class="muted">{t.generatorCopy}</p>
+  <a href="https://qr.vinasig.io.vn/">{t.generatorLink}</a>
+</aside>
+<script>
+  import '../scripts/scanner.ts';
+</script>

@@ -1,0 +1,188 @@
+---
+import ThemeInit from '../components/ThemeInit.astro';
+import SitePreferences from '../components/SitePreferences.astro';
+import { copy } from '../lib/copy.ts';
+import type { Lang } from '../lib/types.ts';
+import '../styles/tokens.css';
+import '../styles/control-surfaces.css';
+import '../styles/app.css';
+interface Props {
+  lang: Lang;
+  page?: 'scanner' | 'licenses';
+}
+const { lang, page = 'scanner' } = Astro.props;
+const t = copy(lang);
+const base = import.meta.env.BASE_URL;
+const route =
+  (lang === 'en' ? 'en/' : '') + (page === 'licenses' ? 'licenses/' : '');
+const canonical = new URL(base + route, Astro.site);
+const local = (path: string): string => base + path;
+const description =
+  page === 'scanner'
+    ? t.description
+    : lang === 'vi'
+      ? 'Giấy phép, mã nguồn và ghi nhận cho VINASIG QR Scanner.'
+      : 'Licenses, source code and acknowledgments for VINASIG QR Scanner.';
+const title = page === 'scanner' ? t.title : t.licenses;
+const alternate = local(
+  (lang === 'vi' ? 'en/' : '') + (page === 'licenses' ? 'licenses/' : ''),
+);
+const source =
+  'https://github.com/VINASIG/qr-scanner/tree/' +
+  (import.meta.env.PUBLIC_BUILD_REVISION || 'main');
+const structured = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'VINASIG QR Scanner',
+    url: canonical.href,
+    description: t.description,
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Web browser',
+    inLanguage: lang,
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'VINASIG',
+      url: 'https://vinasig.io.vn/',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [1, 2, 3, 4].map((number) => ({
+      '@type': 'Question',
+      name: t[('faq' + String(number)) as 'faq1'],
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: t[('answer' + String(number)) as 'answer1'],
+      },
+    })),
+  },
+];
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="description" content={description} />
+    <title>{title} | VINASIG</title>
+    <link rel="canonical" href={canonical} />
+    <link
+      rel="alternate"
+      hreflang="vi"
+      href={
+        new URL(base + (page === 'licenses' ? 'licenses/' : ''), Astro.site)
+      }
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href={
+        new URL(
+          base + 'en/' + (page === 'licenses' ? 'licenses/' : ''),
+          Astro.site,
+        )
+      }
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={
+        new URL(base + (page === 'licenses' ? 'licenses/' : ''), Astro.site)
+      }
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href={local('brand/favicon-32.png')}
+    />
+    <link rel="icon" type="image/svg+xml" href={local('brand/mark.svg')} />
+    <link rel="stylesheet" href={local('fonts/font.css')} />
+    <link
+      rel="preload"
+      href={local('fonts/SpaceGrotesk-VariableFont_wght.woff2')}
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title + ' | VINASIG'} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === 'vi' ? 'vi_VN' : 'en_US'} />
+    <meta
+      property="og:image"
+      content={new URL(base + 'social.png', Astro.site)}
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="QR Scanner | VINASIG" />
+    <meta name="twitter:description" content={description} />
+    <meta
+      name="twitter:image"
+      content={new URL(base + 'social.png', Astro.site)}
+    />
+    {page === 'scanner' && (
+      <script
+        type="application/ld+json"
+        set:html={JSON.stringify(structured).replace(/</g, '\\u003c')}
+      />
+    )}
+    <ThemeInit />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">
+      {t.skip}
+    </a>
+    <div class="page-shell">
+      <header class="site-header">
+        <a
+          class="brand-link"
+          data-brand-logo
+          href="https://vinasig.io.vn/"
+          aria-label={t.home}
+        >
+          <picture>
+            <source
+              media="(prefers-color-scheme: dark)"
+              srcset={local('brand/reversed.svg')}
+            />
+            <img
+              src={local('brand/primary-color.svg')}
+              width="540"
+              height="140"
+              alt="VINASIG"
+              fetchpriority="high"
+            />
+          </picture>
+        </a>
+        <SitePreferences lang={lang} alternate={alternate} />
+      </header>
+      <main id="main-content">
+        {page === 'scanner' && (
+          <div class="hero">
+            <h1>QR Scanner</h1>
+            <p class="tagline">{t.tagline}</p>
+            <p class="intro">{t.intro}</p>
+          </div>
+        )}
+        <slot />
+      </main>
+      <footer class="site-footer">
+        <a href="https://vinasig.io.vn/">{t.home}</a>
+        <a href={source} rel="noopener noreferrer">
+          {t.source}
+        </a>
+        <a href={local((lang === 'en' ? 'en/' : '') + 'licenses/')}>
+          {t.licenses}
+        </a>
+      </footer>
+    </div>
+  </body>
+</html>

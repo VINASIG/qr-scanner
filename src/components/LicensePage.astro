@@ -1,0 +1,72 @@
+---
+import type { Lang } from '../lib/types.ts';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const vi = lang === 'vi';
+---
+
+<section class="license-page">
+  <h1>{vi ? 'Giấy phép và ghi nhận' : 'Licenses and notices'}</h1>
+  <p>
+    {vi
+      ? 'Phần mềm sử dụng GNU Affero General Public License phiên bản 3 hoặc phiên bản mới hơn.'
+      : 'The scanner software uses the GNU Affero General Public License, either version 3 of the License or any later version.'}
+  </p>
+  <p>
+    {vi
+      ? 'Tài liệu và nội dung giải thích do VINASIG viết sử dụng Creative Commons Attribution ShareAlike 4.0. Logo được quản lý theo chính sách thương hiệu riêng. Font Space Grotesk giữ giấy phép SIL Open Font License.'
+      : 'Documentation and authored educational copy use Creative Commons Attribution ShareAlike 4.0. Brand marks follow the separate VINASIG Brand Usage Policy. Space Grotesk retains the SIL Open Font License.'}
+  </p>
+  <ul>
+    <li>
+      <a href="https://github.com/VINASIG/qr-scanner">
+        {vi ? 'Toàn bộ mã nguồn' : 'Corresponding Source'}
+      </a>
+    </li>
+    <li>
+      <a href={base + 'licenses/AGPL-3.0-or-later.txt'}>
+        {vi ? 'Giấy phép phần mềm' : 'Software license'}
+      </a>
+    </li>
+    <li>
+      <a href={base + 'licenses/CC-BY-SA-4.0.txt'}>
+        {vi ? 'Giấy phép tài liệu' : 'Documentation license'}
+      </a>
+    </li>
+    <li>
+      <a href={base + 'licenses/BRAND_POLICY.md'}>
+        {vi
+          ? 'Chính sách sử dụng thương hiệu VINASIG'
+          : 'VINASIG Brand Usage Policy'}
+      </a>
+    </li>
+    <li>
+      <a href={base + 'fonts/OFL.txt'}>
+        {vi ? 'Giấy phép Space Grotesk' : 'Space Grotesk license'}
+      </a>
+    </li>
+    <li>
+      <a href={base + 'licenses/NOTICE.txt'}>
+        {vi ? 'Thông tin bản phát hành' : 'Distribution notices'}
+      </a>
+    </li>
+    <li>
+      <a href={base + 'licenses/zxing-wasm.txt'}>
+        {vi ? 'Giấy phép ZXing WebAssembly' : 'ZXing WebAssembly license'}
+      </a>
+    </li>
+    <li>
+      <a href={base + 'licenses/zxing-cpp.txt'}>
+        {vi ? 'Giấy phép ZXing C++' : 'ZXing C++ license'}
+      </a>
+    </li>
+    <li>
+      <a href={base + 'licenses/lucide.txt'}>
+        {vi ? 'Giấy phép Lucide' : 'Lucide license'}
+      </a>
+    </li>
+  </ul>
+</section>
