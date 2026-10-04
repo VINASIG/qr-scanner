@@ -6,6 +6,7 @@ The first rendered draft is recorded under output/responsive/before/. This is a 
 
 ## Gates
 
+- The license-check lifecycle creates the revision notice before validation, including on a fresh clone where generated public files do not exist. The build performs the same idempotent generation.
 - npm run check runs strict typecheck, JavaScript/TypeScript lint, CSS lint, formatting, managed standards integrity and SPDX/license checks.
 - npm test checks payload parsing, safe links, escaping and image bounds.
 - npm run build validates generated HTML, route metadata, preserved brand/font bytes, source/license access and the exact reader WASM digest.

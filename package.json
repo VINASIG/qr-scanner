@@ -27,6 +27,7 @@
     "format:check": "prettier --check .",
     "format": "prettier --write .",
     "check:standards": "node scripts/check-standards.ts",
+    "precheck:licenses": "node scripts/notices.ts",
     "check:licenses": "node .vinasig/standards/templates/check-licenses.mjs",
     "check": "npm run typecheck && npm run lint && npm run lint:css && npm run format:check && npm run check:standards && npm run check:licenses",
     "prebuild": "node scripts/notices.ts",
