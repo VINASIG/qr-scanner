@@ -10,6 +10,10 @@ Read README.md, docs/PRODUCT.md, docs/RESEARCH.md, docs/TOOLCHAIN.md, docs/BRAND
 - Run check, unit, build, browser and performance gates. Use fixture images and fake camera/clipboard permission paths for deterministic tests. Capture and OPEN screenshots across the standard viewport matrix, breakpoint neighbors, 320 px and 200% text, both languages and themes. Never describe fixture camera coverage as real hardware verification.
 - Software uses AGPL-3.0-or-later, prose CC-BY-SA-4.0, fonts retain OFL-1.1 and marks retain the separate brand policy. Preserve original upstream license notices and asset bytes. Keep build sources and source revision available to users.
 - Current owner authorization permits this new VINASIG repository, commit, push and public deployment. Preserve all sibling repositories. Review staged diff, remote HEAD, exact-revision CI and live routes. Artifacts stay in ignored output/. Independent SI-agent trials, physical devices, screen readers and field performance are NOT_RUN unless actually observed. Respond in Vietnamese and write technical docs/commits in English.
+## Shared header and footer
+
+Read docs/SITE_CHROME.md before header or footer changes. Keep shared chrome consistent and run npm run test:chrome.
+
 <!-- VINASIG STANDARDS BEGIN -->
 ## VINASIG SI agent standards 0.1.0
 

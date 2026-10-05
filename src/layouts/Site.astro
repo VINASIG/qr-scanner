@@ -1,4 +1,6 @@
 ---
+import SiteFooter from '../components/SiteFooter.astro';
+import '../styles/site-chrome.css';
 import ThemeInit from '../components/ThemeInit.astro';
 import SitePreferences from '../components/SitePreferences.astro';
 import { copy } from '../lib/copy.ts';
@@ -140,8 +142,8 @@ const structured = [
     <a class="skip-link" href="#main-content">
       {t.skip}
     </a>
-    <div class="page-shell">
-      <header class="site-header">
+    <div class="page-shell" data-site-shell>
+      <header class="site-header" data-site-header>
         <a
           class="brand-link"
           data-brand-logo
@@ -174,15 +176,12 @@ const structured = [
         )}
         <slot />
       </main>
-      <footer class="site-footer">
-        <a href="https://vinasig.io.vn/">{t.home}</a>
-        <a href={source} rel="noopener noreferrer">
-          {t.source}
-        </a>
-        <a href={local((lang === 'en' ? 'en/' : '') + 'licenses/')}>
-          {t.licenses}
-        </a>
-      </footer>
+      <SiteFooter
+        lang={lang}
+        source={source}
+        issues="https://github.com/VINASIG/qr-scanner/issues"
+        licenses={local((lang === 'en' ? 'en/' : '') + 'licenses/')}
+      />
     </div>
   </body>
 </html>

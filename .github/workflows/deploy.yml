@@ -23,6 +23,8 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         browser: [chromium, firefox, webkit]
     runs-on: ${{ matrix.os }}
+    env:
+      BROWSER_ENGINE: ${{ matrix.browser }}
     timeout-minutes: 30
     steps:
       - name: Check out source
