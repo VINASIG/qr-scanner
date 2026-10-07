@@ -708,9 +708,17 @@ test('theme and language preserve identity without saved payloads', async ({
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('html')).toHaveAttribute('data-theme', dark ?? '');
   await check(page);
-  expect(await page.evaluate(() => Object.keys(localStorage))).toEqual([
-    'vinasig-theme',
-  ]);
+  expect(
+    await page.evaluate(() =>
+      Object.fromEntries(
+        Object.keys(localStorage).map((key) => [
+          key,
+          localStorage.getItem(key),
+        ]),
+      ),
+    ),
+  ).toEqual({ 'vinasig-theme': dark, 'vinasig-language': 'en' });
+  expect(await page.evaluate(() => sessionStorage.length)).toBe(0);
   await expect(page.locator('[data-brand-logo]')).toHaveAttribute(
     'href',
     'https://vinasig.io.vn/',
