@@ -57,3 +57,5 @@ GIF uses its first frame. SVG and PDF are not accepted. Camera hardware, clipboa
 Software uses **AGPL-3.0-or-later**. Documentation and original educational prose use **CC-BY-SA-4.0**. Space Grotesk retains **OFL-1.1**. VINASIG marks follow the separate [Brand Usage Policy](BRAND_POLICY.md).
 
 See [LICENSES.md](LICENSES.md) and [third party notices](THIRD_PARTY_NOTICES.md). Full software source, build instructions and exact dependency versions are available in this repository.
+
+System defaults and shared deliberate theme/language choices follow [the ecosystem preference contract](docs/LOCALIZATION.md). Active work is preserved when another tab changes language.

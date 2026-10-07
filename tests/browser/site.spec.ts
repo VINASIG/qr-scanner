@@ -738,6 +738,7 @@ test('JavaScript disabled gives honest disabled controls', async ({
   browser,
 }, info) => {
   const context = await browser.newContext({
+    locale: 'vi-VN',
     javaScriptEnabled: false,
     viewport: { width: 390, height: 844 },
   });
