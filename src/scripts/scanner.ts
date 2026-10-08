@@ -33,7 +33,7 @@ const t = copy(root.dataset['lang'] === 'en' ? 'en' : 'vi');
 const file = element('#file', HTMLInputElement);
 const dropzone = element('#dropzone', HTMLDivElement);
 const pasteField = element('#image-paste', HTMLTextAreaElement);
-const cameraSection = element('#camera-section', HTMLDetailsElement);
+const cameraSection = element('#camera-section', HTMLDivElement);
 const preview = element('#preview', HTMLElement);
 const previewImage = element('#preview-image', HTMLImageElement);
 const urlInput = element('#image-url', HTMLInputElement);
@@ -41,6 +41,9 @@ const video = element('#video', HTMLVideoElement);
 const cameraPreview = element('#camera-preview', HTMLDivElement);
 const startCamera = element('#start-camera', HTMLButtonElement);
 const stopCamera = element('#stop-camera', HTMLButtonElement);
+const stopCameraLabel = element('#stop-camera-label', HTMLSpanElement);
+const switchCamera = element('#switch-camera', HTMLButtonElement);
+const cameraStatus = element('#camera-status', HTMLParagraphElement);
 const empty = element('#empty', HTMLDivElement);
 const results = element('#results', HTMLDivElement);
 const status = element('#status', HTMLParagraphElement);
@@ -53,6 +56,8 @@ let pendingCancel: (() => void) | null = null;
 let request: AbortController | null = null;
 let stream: MediaStream | null = null;
 let cameraTimer: number | undefined;
+let cameraDevices: string[] = [];
+let cameraDevice = '';
 let previewURL: string | null = null;
 let report: ScanReport | null = null;
 
@@ -79,6 +84,13 @@ function stopTracks(): void {
   stream = null;
   video.srcObject = null;
   cameraPreview.hidden = true;
+  cameraSection.hidden = true;
+  startCamera.setAttribute('aria-expanded', 'false');
+  cameraStatus.textContent = '';
+  switchCamera.hidden = true;
+  switchCamera.disabled = true;
+  cameraDevices = [];
+  cameraDevice = '';
   stopCamera.disabled = true;
   startCamera.disabled = false;
 }
@@ -625,7 +637,7 @@ async function cameraFrame(id: number): Promise<void> {
     }
   }
 }
-async function openCamera(): Promise<void> {
+async function openCamera(deviceId?: string): Promise<void> {
   const id = begin();
   const devices = mediaAPI();
   if (!devices?.getUserMedia) {
@@ -634,14 +646,17 @@ async function openCamera(): Promise<void> {
   }
   startCamera.disabled = true;
   stopCamera.disabled = false;
+  stopCameraLabel.textContent = t.cancelCamera;
+  cameraSection.hidden = false;
+  startCamera.setAttribute('aria-expanded', 'true');
+  cameraStatus.textContent = t.cameraRequest;
   try {
-    const facing =
-      document.querySelector<HTMLInputElement>('input[name="camera"]:checked')
-        ?.value ?? 'environment';
     const next = await devices.getUserMedia({
       audio: false,
       video: {
-        facingMode: { ideal: facing },
+        ...(deviceId
+          ? { deviceId: { exact: deviceId } }
+          : { facingMode: { ideal: 'environment' } }),
         width: { ideal: 1280 },
         height: { ideal: 720 },
       },
@@ -658,6 +673,24 @@ async function openCamera(): Promise<void> {
       t.cameraActual + ' - ' + (track?.label || t.unknown);
     await video.play();
     if (id !== generation) return;
+    cameraDevice = track?.getSettings().deviceId ?? '';
+    try {
+      const available = (await devices.enumerateDevices?.()) ?? [];
+      if (id !== generation) return;
+      cameraDevices = [
+        ...new Set(
+          available
+            .filter((device) => device.kind === 'videoinput' && device.deviceId)
+            .map((device) => device.deviceId),
+        ),
+      ];
+    } catch {
+      if (id !== generation) return;
+    }
+    stopCameraLabel.textContent = t.stop;
+    cameraStatus.textContent = t.watching;
+    switchCamera.hidden = cameraDevices.length < 2;
+    switchCamera.disabled = cameraDevices.length < 2;
     busy(true, t.watching);
     await cameraFrame(id);
   } catch (error) {
@@ -676,33 +709,26 @@ async function openCamera(): Promise<void> {
   }
 }
 startCamera.addEventListener('click', () => {
-  cameraSection.open = true;
-  startCamera.setAttribute('aria-expanded', 'true');
   void openCamera();
 });
 stopCamera.addEventListener('click', () => {
   cancel();
   busy(false, t.stopped);
+  startCamera.focus();
 });
-for (const choice of document.querySelectorAll<HTMLInputElement>(
-  'input[name="camera"]',
-))
-  choice.addEventListener('change', () => {
-    if (stream || startCamera.disabled) void openCamera();
-  });
-element('#camera-section', HTMLDetailsElement).addEventListener(
-  'toggle',
-  () => {
-    startCamera.setAttribute('aria-expanded', String(cameraSection.open));
-    if (
-      !element('#camera-section', HTMLDetailsElement).open &&
-      (stream || startCamera.disabled)
-    ) {
-      cancel();
-      busy(false, t.stopped);
-    }
-  },
-);
+switchCamera.addEventListener('click', () => {
+  const next =
+    cameraDevices[
+      (cameraDevices.indexOf(cameraDevice) + 1) % cameraDevices.length
+    ];
+  if (next) void openCamera(next);
+});
+cameraSection.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    stopCamera.click();
+  }
+});
 element('#clear', HTMLButtonElement).addEventListener('click', () => {
   begin();
   worker?.terminate();
@@ -742,5 +768,6 @@ for (const control of root.querySelectorAll<
 >('button[disabled], input[disabled], fieldset[disabled], textarea[disabled]'))
   control.disabled = false;
 stopCamera.disabled = true;
+switchCamera.disabled = true;
 downloadResults.disabled = true;
 root.dataset['ready'] = 'true';

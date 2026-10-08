@@ -1,5 +1,12 @@
 ---
-import { Trash, QrCode, ScanLine, Download, Square } from '@lucide/astro';
+import {
+  Trash,
+  QrCode,
+  ScanLine,
+  Download,
+  X,
+  SwitchCamera,
+} from '@lucide/astro';
 import QrImageIntake from './QrImageIntake.astro';
 import { copy } from '../lib/copy.ts';
 import type { Lang } from '../lib/types.ts';
@@ -39,21 +46,16 @@ const t = copy(lang);
       pasteButtonId="paste"
       cameraId="start-camera"
       cameraControlsId="camera-section"
-      cameraDescribedBy="camera-help camera-error"
+      cameraDescribedBy="camera-error"
       title={t.dropTitle}
       placeholder={t.pastePlaceholder}
       chooseLabel={t.choose}
       pasteLabel={t.paste}
       cameraLabel={t.cameraAction}
-      helpId="image-help"
-      help={t.dropHelp}
-      describedBy="image-help image-error image-paste-hint"
+      describedBy="image-error"
       accept="image/png,image/jpeg,image/webp,image/gif,image/bmp,image/avif"
     />
     <p class="field-error" id="image-error" role="alert" hidden></p>
-    <p id="image-paste-hint" class="small muted paste-help">
-      {t.pasteHelp}
-    </p>
     <figure class="preview" id="preview" hidden>
       <img
         id="preview-image"
@@ -69,76 +71,71 @@ const t = copy(lang);
       ></figcaption>
     </figure>
     <details class="input-disclosure" id="url-section">
-      <summary>{t.urlTitle}</summary>
+      <summary id="url-title">{t.urlTitle}</summary>
       <form id="url-form" novalidate>
-        <label for="image-url">{t.urlLabel}</label>
-        <input
-          id="image-url"
-          type="url"
-          inputmode="url"
-          autocomplete="off"
-          spellcheck="false"
-          placeholder={t.urlPlaceholder}
-          aria-describedby="url-help url-error"
-          disabled
-        />
+        <div class="url-actions">
+          <input
+            id="image-url"
+            type="url"
+            inputmode="url"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder={t.urlPlaceholder}
+            aria-labelledby="url-title"
+            aria-describedby="url-help url-error"
+            disabled
+          />
+          <button
+            class="button button-secondary"
+            type="submit"
+            id="scan-url"
+            disabled
+          >
+            <ScanLine aria-hidden="true" />
+            {t.scanURL}
+          </button>
+        </div>
         <p class="field-error" id="url-error" role="alert" hidden></p>
         <p id="url-help" class="small muted">
           {t.urlHelp}
         </p>
-        <button
-          class="button button-secondary"
-          type="submit"
-          id="scan-url"
-          disabled
-        >
-          <ScanLine aria-hidden="true" />
-          {t.scanURL}
-        </button>
       </form>
     </details>
-    <details class="input-disclosure" id="camera-section">
-      <summary>{t.cameraTitle}</summary>
-      <p class="small muted" id="camera-help">
-        {t.cameraHelp}
-      </p>
-      <fieldset class="camera-choice" disabled>
-        <legend>{t.cameraChoice}</legend>
-        <div class="radio-row">
-          <label>
-            <input type="radio" name="camera" value="environment" checked />
-            <span>{t.back}</span>
-          </label>
-          <label>
-            <input type="radio" name="camera" value="user" />
-            <span>{t.front}</span>
-          </label>
-        </div>
-      </fieldset>
+    <p class="field-error" id="camera-error" role="alert" hidden></p>
+    <div class="camera-section" id="camera-section" hidden>
+      <div
+        class="camera-preview"
+        id="camera-preview"
+        role="group"
+        aria-label={t.videoLabel}
+        hidden
+      >
+        <video id="video" aria-hidden="true" muted playsinline></video>
+        <p class="small muted" id="camera-label" data-user-content></p>
+      </div>
       <div class="button-row">
+        <button
+          class="button button-secondary"
+          type="button"
+          id="switch-camera"
+          hidden
+          disabled
+        >
+          <SwitchCamera aria-hidden="true" />
+          <span>{t.switchCamera}</span>
+        </button>
         <button
           class="button button-secondary"
           type="button"
           id="stop-camera"
           disabled
         >
-          <Square aria-hidden="true" />
-          {t.stop}
+          <X aria-hidden="true" />
+          <span id="stop-camera-label">{t.cancelCamera}</span>
         </button>
       </div>
-      <p class="field-error" id="camera-error" role="alert" hidden></p>
-      <div class="camera-preview" id="camera-preview" hidden>
-        <video
-          id="video"
-          aria-describedby="camera-help"
-
-          muted
-          playsinline
-        ></video>
-        <p class="small muted" id="camera-label" data-user-content></p>
-        <p class="small muted">{t.cameraFallback}</p>
-      </div>
-    </details>
+      <p id="camera-status" class="small" role="status"></p>
+    </div>
     <p class="privacy small muted">{t.privacy}</p>
     <noscript>
       <p class="field-error">{t.noScript}</p>
@@ -172,6 +169,12 @@ const t = copy(lang);
 </section>
 <section class="faq" aria-labelledby="faq-title">
   <h2 id="faq-title">{t.faqTitle}</h2>
+  <details class="faq-item">
+    <summary>{t.imageHelpTitle}</summary>
+    <p>{t.dropHelp}</p>
+    <p>{t.pasteHelp}</p>
+    <p>{t.cameraHelp}</p>
+  </details>
   {[1, 2, 3, 4].map((number) => (
     <details class="faq-item">
       <summary>{t[('faq' + String(number)) as 'faq1']}</summary>

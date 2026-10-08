@@ -265,6 +265,26 @@ summary {
   margin-bottom: var(--space-3);
 }
 
+.url-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.url-actions > input {
+  flex: 1 1 12rem;
+}
+
+.url-actions > button {
+  flex: 0 0 auto;
+  min-height: 48px;
+}
+
+.camera-section {
+  margin-top: var(--space-4);
+}
+
 form label {
   display: block;
   font-weight: 600;
@@ -303,51 +323,13 @@ input[aria-invalid='true'] {
   overflow-wrap: anywhere;
 }
 
-.camera-choice {
-  margin: var(--space-4) 0;
-  padding: 0;
-  border: 0;
-  min-width: 0;
-}
-
-.camera-choice legend {
-  font-weight: 600;
-  padding: 0;
-  margin-bottom: var(--space-2);
-}
-
-.radio-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.radio-row label {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-height: 44px;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-}
-
-.radio-row label:has(input:checked) {
-  border-color: var(--color-info);
-  background: var(--color-info-background);
-}
-
-.camera-preview {
-  margin-top: var(--space-4);
-}
-
 video {
   display: block;
   width: 100%;
   max-height: 24rem;
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-sm);
-  background: var(--color-surface-inverse);
+  background: #000;
   object-fit: contain;
 }
 
@@ -603,13 +585,8 @@ li::before {
 
 @media (forced-colors: active) {
   .button,
-  .dropzone,
-  .radio-row label {
+  .dropzone {
     border-color: ButtonText;
-  }
-
-  .radio-row label:has(input:checked) {
-    outline: 2px solid Highlight;
   }
 }
 

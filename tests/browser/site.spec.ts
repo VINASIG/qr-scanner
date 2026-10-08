@@ -597,7 +597,7 @@ test('camera permission failure and no automatic camera request', async ({
       () => Reflect.get(window, 'cameraRequestCount') as unknown,
     ),
   ).toBe(0);
-  await page.locator('#camera-section summary').click();
+  await expect(page.locator('#camera-section')).toBeHidden();
   expect(
     await page.evaluate(
       () => Reflect.get(window, 'cameraRequestCount') as unknown,
@@ -629,14 +629,16 @@ test('camera fixture, facing switch, stop, result and cleanup', async ({
       configurable: true,
       value: {
         getUserMedia: async (constraints: MediaStreamConstraints) => {
-          const facing =
+          const camera =
             typeof constraints.video === 'object'
-              ? constraints.video.facingMode
+              ? constraints.video
               : undefined;
           state.calls.push(
-            typeof facing === 'object' && 'ideal' in facing
-              ? String(facing.ideal)
-              : '',
+            camera &&
+              typeof camera.deviceId === 'object' &&
+              'exact' in camera.deviceId
+              ? String(camera.deviceId.exact)
+              : 'environment',
           );
           const canvas = document.createElement('canvas');
           canvas.width = 480;
@@ -653,6 +655,9 @@ test('camera fixture, facing switch, stop, result and cleanup', async ({
           }, 50);
           const stream = canvas.captureStream(20);
           for (const track of stream.getTracks()) {
+            track.getSettings = () => ({
+              deviceId: state.calls.at(-1) === 'front' ? 'front' : 'rear',
+            });
             const stop = track.stop.bind(track);
             track.stop = () => {
               state.stopped++;
@@ -662,17 +667,21 @@ test('camera fixture, facing switch, stop, result and cleanup', async ({
           }
           return stream;
         },
+        enumerateDevices: () =>
+          Promise.resolve([
+            { kind: 'videoinput', deviceId: 'rear' },
+            { kind: 'videoinput', deviceId: 'front' },
+          ]),
       },
     });
   }, base64);
   await open(page);
-  await page.locator('#camera-section summary').click();
   await page.locator('#start-camera').click();
   await expect(page.locator('#camera-preview')).toBeVisible();
-  await page.locator('input[value="user"]').check();
+  await page.locator('#switch-camera').click();
   await expect
     .poll(() => page.evaluate(() => window.cameraFixture.calls as unknown))
-    .toEqual(['environment', 'user']);
+    .toEqual(['environment', 'front']);
   await expect
     .poll(() => page.evaluate(() => window.cameraFixture.stopped as unknown))
     .toBe(1);
@@ -851,7 +860,6 @@ test('camera unavailable and missing device give adjacent recovery help', async 
     });
   });
   await open(page);
-  await page.locator('#camera-section summary').click();
   await page.locator('#start-camera').click();
   await expect(page.locator('#camera-error')).toBeVisible();
   await expect(page.locator('#stop-camera')).toBeDisabled();
@@ -907,6 +915,43 @@ test('license routes keep links usable in both themes and languages', async ({
   }
 });
 
+for (const lang of ['vi', 'en'])
+  test(`image URL stays secondary and fetches only on Scan ${lang}`, async ({
+    page,
+  }, info) => {
+    let requests = 0;
+    await page.route('https://image.fixture.invalid/qr.png', async (route) => {
+      requests++;
+      await route.fulfill({
+        status: 200,
+        contentType: 'image/png',
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: await readFile(imageFile('text')),
+      });
+    });
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await open(page, lang === 'en' ? 'en/' : '');
+    const disclosure = page.locator('#url-section');
+    await expect(disclosure).not.toHaveAttribute('open');
+    await disclosure.locator('summary').click();
+    const field = page.getByRole('textbox', {
+      name: lang === 'en' ? 'Use an image link' : 'Dùng link ảnh',
+    });
+    await field.fill('https://image.fixture.invalid/qr.png');
+    await page.waitForTimeout(300);
+    expect(requests).toBe(0);
+    const input = await field.boundingBox();
+    const button = await page.locator('#scan-url').boundingBox();
+    if (!input || !button) throw new Error('Missing URL row');
+    expect(
+      Math.abs(input.y + input.height / 2 - button.y - button.height / 2),
+    ).toBeLessThan(1);
+    await capture(page, info, `${lang}-compact-url-row`);
+    await page.locator('#scan-url').click();
+    await expect(page.locator('.code-card')).toHaveCount(1);
+    expect(requests).toBe(1);
+  });
+
 test('camera permission granted after clear releases every returned track', async ({
   page,
 }) => {
@@ -934,7 +979,6 @@ test('camera permission granted after clear releases every returned track', asyn
     });
   });
   await open(page);
-  await page.locator('#camera-section summary').click();
   await page.locator('#start-camera').click();
   await expect
     .poll(() => page.evaluate(() => typeof window.releaseScannerCamera))
