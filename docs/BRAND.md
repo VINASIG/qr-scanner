@@ -13,3 +13,7 @@ Dropdowns, date pickers, color pickers and sliders are not part of this scanner.
 Motion is limited to 160 ms color transitions on buttons. Reduced motion removes them. There are no looping decorative animations.
 
 Visible copy follows the adopted language policy. Semicolons and colons inside user QR data are preserved as payload syntax and are not rewritten.
+
+## Neutral appearance approved on 8 October 2026
+
+Read [the shared theme adoption](THEME.md) before changing interface colors. The approved Radix Gray canvas, text and control roles supersede historical warm interface neutrals. Earlier source and artwork records remain intact.

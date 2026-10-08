@@ -13,13 +13,15 @@ body {
 [data-theme='dark'] {
   color-scheme: dark;
 
-  --color-canvas: #1f1c1d;
-  --color-surface: #292526;
-  --color-surface-muted: #353031;
-  --color-surface-hover: #3c3537;
-  --color-text: #f7f4f1;
-  --color-text-muted: #cecaca;
-  --color-border: #534b4d;
+  --color-canvas: #111;
+  --color-surface: #191919;
+  --color-surface-muted: #222;
+  --color-surface-hover: #2a2a2a;
+  --color-text: #eee;
+  --color-text-muted: #b4b4b4;
+  --color-border: #484848;
+  --color-border-strong: #7b7b7b;
+  --color-indicator: #dce7f2;
   --color-info: #bdcddd;
   --color-info-background: #26303d;
   --color-info-border: #697e9c;
@@ -314,7 +316,7 @@ textarea {
 
 input::placeholder {
   color: var(--color-text-muted);
-  opacity: 0.6;
+  opacity: 1;
 }
 
 input[aria-invalid='true'] {
