@@ -28,7 +28,13 @@ const t = copy(lang);
   <div class="input-pane">
     <div class="pane-heading">
       <h2>{t.inputTitle}</h2>
-      <button class="button button-quiet" type="button" id="clear" disabled>
+      <button
+        class="button button-quiet"
+        type="button"
+        id="clear"
+        disabled
+        data-destructive-action
+      >
         <Trash aria-hidden="true" />
         <span>{t.clear}</span>
       </button>
