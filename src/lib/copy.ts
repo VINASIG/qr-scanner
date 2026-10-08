@@ -14,7 +14,9 @@ const words = {
     'Paste an image with Ctrl + V or Cmd + V, drop it here or choose a file. No account needed.',
   ],
   inputTitle: ['Ảnh của bạn', 'Your image'],
-  dropTitle: ['Dán ảnh hoặc kéo ảnh vào đây', 'Paste or drop an image here'],
+  dropTitle: ['Dán hoặc thả ảnh QR vào đây', 'Paste or drop a QR image here'],
+  pastePlaceholder: ['Dán ảnh QR', 'Paste a QR image'],
+  cameraAction: ['Quét bằng camera', 'Scan with camera'],
   dropHelp: [
     'PNG, JPEG, WebP, GIF, BMP hoặc AVIF. Tối đa 20 MB. GIF được đọc ở khung đầu tiên.',
     'PNG, JPEG, WebP, GIF, BMP or AVIF. Up to 20 MB. GIF uses the first frame.',
@@ -22,8 +24,8 @@ const words = {
   choose: ['Chọn ảnh', 'Choose image'],
   paste: ['Dán ảnh', 'Paste image'],
   pasteHelp: [
-    'Nếu nút dán không được trình duyệt hỗ trợ, hãy dùng Ctrl + V hoặc Cmd + V. Ảnh chụp màn hình cũng dùng được.',
-    'If your browser cannot use the paste button, press Ctrl + V or Cmd + V. Screenshots work too.',
+    'Chọn vùng dán rồi nhấn Ctrl+V hoặc Cmd+V. Trên điện thoại, dùng Dán trên bàn phím. Nếu nút Dán ảnh không dùng được, hãy dùng bàn phím hoặc chọn ảnh.',
+    'Select the paste area and press Ctrl+V or Cmd+V. On a phone, use Paste on your keyboard. If the Paste image button is unavailable, use your keyboard or choose an image.',
   ],
   urlTitle: ['Dùng link ảnh', 'Use an image link'],
   urlLabel: ['Link tới ảnh', 'Image link'],
@@ -36,7 +38,7 @@ const words = {
     'The image is fetched only when you scan it. Its server must allow your browser to read it.',
   ],
   scanURL: ['Quét ảnh từ link', 'Scan image link'],
-  cameraTitle: ['Dùng camera', 'Use a camera'],
+  cameraTitle: ['Cài đặt camera', 'Camera settings'],
   cameraHelp: [
     'Chỉ bật camera khi bạn bấm bắt đầu. Đưa QR vào khung và giữ máy ổn định. Camera tự dừng khi đọc được mã.',
     'The camera starts only when you ask. Keep the QR code in view and hold steady. It stops after a successful scan.',

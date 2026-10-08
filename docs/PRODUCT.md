@@ -10,11 +10,11 @@ QR Scanner is a small, local QR reader. Vietnamese is the default language. Engl
 4. Copy contents, save text or download the complete result report when requested.
 5. Clear removes the input, preview, results and outstanding work.
 
-Image paste is global when the paste event contains an image. Ordinary text pasting into inputs remains unchanged. A pasted image link outside an input opens and fills the image URL field. It waits for Enter or the scan action before fetching.
+The shared QR image intake contains a native paste target and adjacent Choose image, Paste image and Scan with camera actions. Image paste is global when the paste event contains an image. Ordinary text pasting into other inputs remains unchanged. A pasted image link outside an input or into the QR paste target opens and fills the image URL field. It waits for Enter or the scan action before fetching.
 
 ## Secondary flows
 
-Image URL and camera controls begin collapsed. Remote retrieval is an explicit request. Failure guidance sits beside the affected field.
+Image URL and camera settings begin collapsed. The camera action in the shared intake opens the settings and requests the camera. Remote retrieval is an explicit request. Failure guidance sits beside the affected field.
 
 The camera starts only after a user action. Front and back choices are preferences. The browser may choose the closest available camera, and the active device label is shown. Camera tracks stop on success, stop, reset, source change, hidden page, closed camera section or navigation. Only one decode is outstanding at a time.
 

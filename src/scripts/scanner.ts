@@ -32,6 +32,8 @@ const root = element('[data-scanner]', HTMLElement);
 const t = copy(root.dataset['lang'] === 'en' ? 'en' : 'vi');
 const file = element('#file', HTMLInputElement);
 const dropzone = element('#dropzone', HTMLDivElement);
+const pasteField = element('#image-paste', HTMLTextAreaElement);
+const cameraSection = element('#camera-section', HTMLDetailsElement);
 const preview = element('#preview', HTMLElement);
 const previewImage = element('#preview-image', HTMLImageElement);
 const urlInput = element('#image-url', HTMLInputElement);
@@ -104,6 +106,7 @@ function discardPreview(): void {
   element('#image-name', HTMLElement).textContent = '';
 }
 function begin(): number {
+  pasteField.value = '';
   const id = cancel();
   for (const area of ['image', 'url', 'camera'] as const) showError(area, null);
   discardResults();
@@ -475,6 +478,10 @@ file.addEventListener('change', () => {
 element('#choose', HTMLButtonElement).addEventListener('click', () => {
   file.click();
 });
+dropzone.addEventListener('click', (event) => {
+  if (event.target instanceof Element && event.target.closest('button')) return;
+  pasteField.focus();
+});
 element('#paste', HTMLButtonElement).addEventListener('click', () => {
   void (async () => {
     const pasteGeneration = generation;
@@ -515,18 +522,33 @@ window.addEventListener('paste', (event) => {
   const target = event.target;
   if (
     target instanceof HTMLInputElement ||
-    target instanceof HTMLTextAreaElement ||
+    (target instanceof HTMLTextAreaElement && target !== pasteField) ||
     (target instanceof HTMLElement && target.isContentEditable)
   )
     return;
   const text = event.clipboardData?.getData('text/plain') ?? '';
+  if (target === pasteField) {
+    event.preventDefault();
+    pasteField.value = '';
+  }
   if (/^https?:\/\//iu.test(text.trim())) {
     event.preventDefault();
     urlInput.value = text.trim();
     element('#url-section', HTMLDetailsElement).open = true;
     urlInput.focus();
     showError('url', null);
-  }
+  } else if (target === pasteField && text.trim())
+    showError('image', 'clipboardEmpty');
+});
+pasteField.addEventListener('input', () => {
+  const value = pasteField.value.trim();
+  pasteField.value = '';
+  if (/^https?:\/\//iu.test(value)) {
+    urlInput.value = value;
+    element('#url-section', HTMLDetailsElement).open = true;
+    urlInput.focus();
+    showError('url', null);
+  } else if (value) showError('image', 'clipboardEmpty');
 });
 for (const name of ['dragenter', 'dragover'] as const)
   dropzone.addEventListener(name, (event) => {
@@ -654,6 +676,8 @@ async function openCamera(): Promise<void> {
   }
 }
 startCamera.addEventListener('click', () => {
+  cameraSection.open = true;
+  startCamera.setAttribute('aria-expanded', 'true');
   void openCamera();
 });
 stopCamera.addEventListener('click', () => {
@@ -669,6 +693,7 @@ for (const choice of document.querySelectorAll<HTMLInputElement>(
 element('#camera-section', HTMLDetailsElement).addEventListener(
   'toggle',
   () => {
+    startCamera.setAttribute('aria-expanded', String(cameraSection.open));
     if (
       !element('#camera-section', HTMLDetailsElement).open &&
       (stream || startCamera.disabled)
@@ -710,8 +735,11 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 for (const control of root.querySelectorAll<
-  HTMLButtonElement | HTMLInputElement | HTMLFieldSetElement
->('button[disabled], input[disabled], fieldset[disabled]'))
+  | HTMLButtonElement
+  | HTMLInputElement
+  | HTMLFieldSetElement
+  | HTMLTextAreaElement
+>('button[disabled], input[disabled], fieldset[disabled], textarea[disabled]'))
   control.disabled = false;
 stopCamera.disabled = true;
 downloadResults.disabled = true;

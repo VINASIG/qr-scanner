@@ -2,6 +2,8 @@
 
 Read [the complete project context](docs/PROJECT_ENTRYPOINT.md) before implementation work, together with every required guide linked there. It preserves the project-specific scope, ownership, source map, deployment and verification requirements. Apply the shared policy snapshot below; project guidance adds facts and does not replace the common acceptance contract.
 
+For QR image intake changes, read [the shared intake contract](docs/QR_INTAKE.md). Reuse the pinned component and stylesheet from web-design-system. Verify both actual consumers and acquisition failures before publication.
+
 <!-- VINASIG STANDARDS BEGIN -->
 ## VINASIG SI agent standards 0.1.0
 

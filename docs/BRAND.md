@@ -6,7 +6,7 @@ Header logos are the original transparent horizontal exports. Light surfaces use
 
 The logo link returns to https://vinasig.io.vn/. Interface icons use Lucide. No brand icon library is needed by this product.
 
-The main UI has one image input panel and one result panel. URL and camera flows begin collapsed. Technical details, original structured payloads and credential disclosures begin collapsed. Errors appear beside their relevant controls. Clear is a named, outlined button with an icon.
+The main UI has one image input panel and one result panel. The shared QR image intake matches TOTP Generator: a dashed information surface, native paste target and adjacent Choose image, Paste image and Scan with camera actions. URL and camera settings begin collapsed. Technical details, original structured payloads and credential disclosures begin collapsed. Errors appear beside their relevant controls. Clear is a named, outlined button with an icon.
 
 Dropdowns, date pickers, color pickers and sliders are not part of this scanner. Styled native radios choose the camera preference. Disclosures, scrollbars, file triggers, focus, disabled states and forced colors use the reviewed control styles.
 

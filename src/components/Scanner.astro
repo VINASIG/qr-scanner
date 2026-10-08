@@ -1,14 +1,6 @@
 ---
-import {
-  ClipboardPaste,
-  ImagePlus,
-  Camera,
-  Trash,
-  QrCode,
-  ScanLine,
-  Download,
-  Square,
-} from '@lucide/astro';
+import { Trash, QrCode, ScanLine, Download, Square } from '@lucide/astro';
+import QrImageIntake from './QrImageIntake.astro';
 import { copy } from '../lib/copy.ts';
 import type { Lang } from '../lib/types.ts';
 interface Props {
@@ -39,51 +31,29 @@ const t = copy(lang);
         <span>{t.clear}</span>
       </button>
     </div>
-    <div
+    <QrImageIntake
       id="dropzone"
-      class="dropzone"
-      aria-describedby="image-help image-error"
-    >
-      <ImagePlus aria-hidden="true" class="drop-icon" />
-      <p class="drop-title">{t.dropTitle}</p>
-      <div class="button-row">
-        <button
-          class="button button-primary"
-          type="button"
-          id="choose"
-          disabled
-        >
-          <ImagePlus aria-hidden="true" />
-          {t.choose}
-        </button>
-        <button
-          class="button button-secondary"
-          type="button"
-          id="paste"
-          disabled
-        >
-          <ClipboardPaste aria-hidden="true" />
-          {t.paste}
-        </button>
-      </div>
-      <label class="visually-hidden" for="file">
-        {t.choose}
-      </label>
-      <input
-        class="visually-hidden"
-        id="file"
-        type="file"
-        accept="image/png,image/jpeg,image/webp,image/gif,image/bmp,image/avif"
-        aria-describedby="image-help image-error"
-        tabindex="-1"
-        disabled
-      />
-      <p id="image-help" class="small muted">
-        {t.dropHelp}
-      </p>
-    </div>
+      pasteId="image-paste"
+      fileId="file"
+      chooseId="choose"
+      pasteButtonId="paste"
+      cameraId="start-camera"
+      cameraControlsId="camera-section"
+      cameraDescribedBy="camera-help camera-error"
+      title={t.dropTitle}
+      placeholder={t.pastePlaceholder}
+      chooseLabel={t.choose}
+      pasteLabel={t.paste}
+      cameraLabel={t.cameraAction}
+      helpId="image-help"
+      help={t.dropHelp}
+      describedBy="image-help image-error image-paste-hint"
+      accept="image/png,image/jpeg,image/webp,image/gif,image/bmp,image/avif"
+    />
     <p class="field-error" id="image-error" role="alert" hidden></p>
-    <p class="small muted paste-help">{t.pasteHelp}</p>
+    <p id="image-paste-hint" class="small muted paste-help">
+      {t.pasteHelp}
+    </p>
     <figure class="preview" id="preview" hidden>
       <img
         id="preview-image"
@@ -146,15 +116,6 @@ const t = copy(lang);
         </div>
       </fieldset>
       <div class="button-row">
-        <button
-          class="button button-secondary"
-          type="button"
-          id="start-camera"
-          disabled
-        >
-          <Camera aria-hidden="true" />
-          {t.start}
-        </button>
         <button
           class="button button-secondary"
           type="button"

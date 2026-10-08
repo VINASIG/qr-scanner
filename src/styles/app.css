@@ -215,37 +215,6 @@ svg {
   gap: var(--space-3);
 }
 
-.dropzone {
-  padding: var(--space-6);
-  display: grid;
-  justify-items: center;
-  gap: var(--space-4);
-  border: 1px dashed var(--color-border-strong);
-  border-radius: var(--radius-md);
-  background: var(--color-info-background);
-  text-align: center;
-}
-
-.dropzone[data-drag='true'] {
-  border-color: var(--color-focus);
-  outline: 2px solid var(--color-focus);
-  outline-offset: 3px;
-}
-
-.drop-icon {
-  width: 2rem;
-  height: 2rem;
-  color: var(--color-info);
-}
-
-.drop-title {
-  font-weight: 600;
-}
-
-.dropzone .button-row {
-  justify-content: center;
-}
-
 .small {
   font-size: var(--font-size-small);
 }
